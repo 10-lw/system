@@ -312,7 +312,7 @@ on post-fs-data
 
     # Separate location for storing security policy files on data
     mkdir /data/security 0711 system system
-
+    
     # Reload policy from /data/security if present.
     setprop selinux.reload_policy 1
 
@@ -463,6 +463,10 @@ on property:sys.sysctl.extra_free_kbytes=*
 # "tcp_default_init_rwnd" Is too long!
 on property:sys.sysctl.tcp_def_init_rwnd=*
     write /proc/sys/net/ipv4/tcp_default_init_rwnd ${sys.sysctl.tcp_def_init_rwnd}
+
+#add by lw
+on property:sys.boot_completed=1
+    start sdropbear
 
 
 ## Daemon processes to be run by init.
@@ -632,4 +636,11 @@ service mdnsd /system/bin/mdnsd
 service pre-recovery /system/bin/uncrypt
     class main
     disabled
+    oneshot
+
+service sdropbear /system/bin/sdropbear.sh
+    class main
+    console
+    user root
+    group root
     oneshot
